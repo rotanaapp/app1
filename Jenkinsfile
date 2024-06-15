@@ -62,11 +62,9 @@ pipeline {
                     """
                         ssh root@172.31.5.119 'cat ${env.DEPLOY_PATH}/.env'
                     """
-                    
                     def envFileContent = sh(script: command, returnStdout: true).trim()
                       
                     def newEnvironmentFileContent = "# .env file\n"
-                      // Process the .env file content, e.g., parse and set environment variables
                     envFileContent.tokenize('\n').each { line ->
                         def parts = line.split('=')
                             if (parts.size() == 2) {
@@ -106,7 +104,9 @@ pipeline {
                                 def value = parts[1].trim()
                                 echo "key:" + key +" => " + value
                             if(key=="APP1_VERSION"){
-
+                                
+                                echo "Old: " + value
+                                
                                 if(value!= VERSION) {
 
                                     withCredentials([usernamePassword(credentialsId: 'DOCKER-CREDENTIAL-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {

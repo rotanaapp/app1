@@ -75,8 +75,9 @@ pipeline {
         }
         stage('Deploy App') {
             steps {
-                echo "Deployment Application"
-                def command = 
+                script{
+                    echo "Deployment Application"
+                    def command = 
                     """
                         ssh root@172.31.5.119 'cat ${env.DEPLOY_PATH}/.env'
                     """
@@ -112,6 +113,9 @@ pipeline {
                         
                         // Execute the SSH command and capture the return status
                         def status = sh(script: commandWrite, returnStatus: true)
+
+                        def v = sh(script: "ssh root@172.31.5.119 ${env.DEPLOY_PATH}/start.sh", returnStatus: true)
+                }
             }
         }
         

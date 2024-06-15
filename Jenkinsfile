@@ -53,30 +53,32 @@ pipeline {
 
         }
         stage('Build Image') {
-            sh 'echo "Build Stage"'
-            script{
-                def command = 
-                """
-                    ssh root@172.31.5.119 'cat ${env.DEPLOY_PATH}/.env'
-                """
-                // Read the .env file content
-                def envFileContent = sh(script: command, returnStdout: true).trim()
-                
-                // Print the content of the .env file
-                def newEnvironmentFileContent = "# .env file\n"
-                // Process the .env file content, e.g., parse and set environment variables
-                envFileContent.tokenize('\n').each { line ->
-                    def parts = line.split('=')
-                    if (parts.size() == 2) {
-                        def key = parts[0].trim()
-                        def value = parts[1].trim()
-                        echo "key:" + key +" => " + value
-                    if(key=="APP1_VERSION"){
-                        if(value!= VERSION){
-                            steps {
-                                sh """
-                                    docker build -t $env.REGISTRY/$env.PROJECT_NAME:${VERSION} .
-                                """
+            steps {
+
+                script{
+                    sh 'echo "Build Stage"'
+
+                    def command = 
+                    """
+                        ssh root@172.31.5.119 'cat ${env.DEPLOY_PATH}/.env'
+                    """
+                    
+                    def envFileContent = sh(script: command, returnStdout: true).trim()
+                      
+                    def newEnvironmentFileContent = "# .env file\n"
+                      // Process the .env file content, e.g., parse and set environment variables
+                    envFileContent.tokenize('\n').each { line ->
+                        def parts = line.split('=')
+                            if (parts.size() == 2) {
+                                def key = parts[0].trim()
+                                def value = parts[1].trim()
+                                echo "key:" + key +" => " + value
+                            if(key=="APP1_VERSION"){
+                                if(value!= VERSION) {
+                                    sh """
+                                        docker build -t $env.REGISTRY/$env.PROJECT_NAME:${VERSION} .
+                                    """
+                                }
                             }
                         }
                     }
@@ -85,28 +87,28 @@ pipeline {
         }
         stage('Push Image') {
             steps {
-                echo "push image to docker hub"
-                
-            script{
+                script{
+                    echo "push image to docker hub"
+
                     def command = 
                     """
                         ssh root@172.31.5.119 'cat ${env.DEPLOY_PATH}/.env'
                     """
-                    // Read the .env file content
-                    def envFileContent = sh(script: command, returnStdout: true).trim()
                     
-                    // Print the content of the .env file
+                    def envFileContent = sh(script: command, returnStdout: true).trim()
+                      
                     def newEnvironmentFileContent = "# .env file\n"
-                    // Process the .env file content, e.g., parse and set environment variables
+                      // Process the .env file content, e.g., parse and set environment variables
                     envFileContent.tokenize('\n').each { line ->
                         def parts = line.split('=')
-                        if (parts.size() == 2) {
-                            def key = parts[0].trim()
-                            def value = parts[1].trim()
-                            echo "key:" + key +" => " + value
-                        if(key=="APP1_VERSION"){
-                            if(value!= VERSION){
-                                steps {
+                            if (parts.size() == 2) {
+                                def key = parts[0].trim()
+                                def value = parts[1].trim()
+                                echo "key:" + key +" => " + value
+                            if(key=="APP1_VERSION"){
+
+                                if(value!= VERSION) {
+
                                     withCredentials([usernamePassword(credentialsId: 'DOCKER-CREDENTIAL-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                                         sh """
                                             echo 'Login docker hub account.'
@@ -132,37 +134,29 @@ pipeline {
                         ssh root@172.31.5.119 'cat ${env.DEPLOY_PATH}/.env'
                     """
                     
-                      // Read the .env file content
-                      def envFileContent = sh(script: command, returnStdout: true).trim()
+                    def envFileContent = sh(script: command, returnStdout: true).trim()
                       
-                      // Print the content of the .env file
-                      echo "Content of .env original file:\n${envFileContent}"
-                        def newEnvironmentFileContent = "# .env file\n"
+                    def newEnvironmentFileContent = "# .env file\n"
                       // Process the .env file content, e.g., parse and set environment variables
-                        envFileContent.tokenize('\n').each { line ->
-                            def parts = line.split('=')
+                    envFileContent.tokenize('\n').each { line ->
+                        def parts = line.split('=')
                             if (parts.size() == 2) {
                                 def key = parts[0].trim()
                                 def value = parts[1].trim()
                                 echo "key:" + key +" => " + value
                             if(key=="APP1_VERSION"){
                                 newEnvironmentFileContent +="${key}=${VERSION}\n"
-                            }else if(key=="APP2_VERSION"){
-                                newEnvironmentFileContent +="${key}=${value}\n"
-                            }else if(key=="APP3_VERSION"){ 
-                                newEnvironmentFileContent +="${key}=${value}"
                             }
-                          }
-                      }
-                      echo "Content of .env new file:\n${newEnvironmentFileContent}"
-                        def commandWrite = """
-                            ssh root@172.31.5.119 'echo "${newEnvironmentFileContent}" > ${env.DEPLOY_PATH}/.env'
-                        """
+                        }
+                    }
+                    def commandWrite = """
+                        ssh root@172.31.5.119 'echo "${newEnvironmentFileContent}" > ${env.DEPLOY_PATH}/.env'
+                    """
                         
-                        // Execute the SSH command and capture the return status
-                        def status = sh(script: commandWrite, returnStatus: true)
+                    // Execute the SSH command and capture the return status
+                    def status = sh(script: commandWrite, returnStatus: true)
 
-                        def v = sh(script: "ssh root@172.31.5.119 ${env.DEPLOY_PATH}/start.sh", returnStatus: true)
+                    def v = sh(script: "ssh root@172.31.5.119 ${env.DEPLOY_PATH}/start.sh", returnStatus: true)
                 }
             }
         }

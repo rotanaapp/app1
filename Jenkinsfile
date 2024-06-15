@@ -97,9 +97,7 @@ pipeline {
                                 def value = parts[1].trim()
                                 echo "key:" + key +" => " + value
                             if(key=="APP1_VERSION"){
-                                if(value!= VERSION){
-                                    newEnvironmentFileContent +="${key}=${VERSION}\n"
-                                }
+                                newEnvironmentFileContent +="${key}=${VERSION}\n"
                             }else if(key=="APP2_VERSION"){
                                 newEnvironmentFileContent +="${key}=${value}\n"
                             }else if(key=="APP3_VERSION"){ 

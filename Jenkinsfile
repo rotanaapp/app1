@@ -75,43 +75,43 @@ pipeline {
         }
         stage('Deploy App') {
             steps {
-                // echo "Deployment Application"
-                // def command = 
-                //     """
-                //         ssh root@172.31.5.119 'cat $env.DEPLOY_PATH/.env'
-                //     """
+                echo "Deployment Application"
+                def command = 
+                    """
+                        ssh root@172.31.5.119 'cat $env.DEPLOY_PATH/.env'
+                    """
                     
-                //       // Read the .env file content
-                //       def envFileContent = sh(script: command, returnStdout: true).trim()
+                      // Read the .env file content
+                      def envFileContent = sh(script: command, returnStdout: true).trim()
                       
-                //       // Print the content of the .env file
-                //       echo "Content of .env original file:\n${envFileContent}"
-                //        def newEnvironmentFileContent = "# .env file\n"
-                //       // Process the .env file content, e.g., parse and set environment variables
-                //       envFileContent.tokenize('\n').each { line ->
-                //           def parts = line.split('=')
-                //           if (parts.size() == 2) {
-                //               def key = parts[0].trim()
-                //               def value = parts[1].trim()
-                //             echo "key:" + key +" => " + value
-                //             if(key=="APP1_VERSION"){
-                //                 if(value!= VERSION){
-                //                     newEnvironmentFileContent +="${key}=${VERSION}\n"
-                //                 }
-                //             }else if(key=="APP2_VERSION"){
-                //                 newEnvironmentFileContent +="${key}=${value}\n"
-                //             }else if(key=="APP3_VERSION"){ 
-                //                 newEnvironmentFileContent +="${key}=${value}"
-                //             }
-                //           }
-                //       }
-                //       echo "Content of .env new file:\n${newEnvironmentFileContent}"
-                //         def commandWrite = """
-                //             ssh root@172.31.5.119 'echo "${newEnvironmentFileContent}" > $env.DEPLOY_PATH/.env'
-                //         """
+                      // Print the content of the .env file
+                      echo "Content of .env original file:\n${envFileContent}"
+                       def newEnvironmentFileContent = "# .env file\n"
+                      // Process the .env file content, e.g., parse and set environment variables
+                      envFileContent.tokenize('\n').each { line ->
+                          def parts = line.split('=')
+                          if (parts.size() == 2) {
+                              def key = parts[0].trim()
+                              def value = parts[1].trim()
+                            echo "key:" + key +" => " + value
+                            if(key=="APP1_VERSION"){
+                                if(value!= VERSION){
+                                    newEnvironmentFileContent +="${key}=${VERSION}\n"
+                                }
+                            }else if(key=="APP2_VERSION"){
+                                newEnvironmentFileContent +="${key}=${value}\n"
+                            }else if(key=="APP3_VERSION"){ 
+                                newEnvironmentFileContent +="${key}=${value}"
+                            }
+                          }
+                      }
+                      echo "Content of .env new file:\n${newEnvironmentFileContent}"
+                        def commandWrite = """
+                            ssh root@172.31.5.119 'echo "${newEnvironmentFileContent}" > $env.DEPLOY_PATH/.env'
+                        """
                         
-                //         // Execute the SSH command and capture the return status
-                //         def status = sh(script: commandWrite, returnStatus: true)
+                        // Execute the SSH command and capture the return status
+                        def status = sh(script: commandWrite, returnStatus: true)
             }
         }
         

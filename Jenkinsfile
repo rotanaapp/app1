@@ -105,6 +105,8 @@ pipeline {
                                 echo "key:" + key +" => " + value
                             if(key =="APP1_VERSION"){
 
+                                echo "Test 1: " + value +"Test 2: " + value
+
                                 if(value != VERSION) {
                                     withCredentials([usernamePassword(credentialsId: 'DOCKER-CREDENTIAL-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                                         sh """

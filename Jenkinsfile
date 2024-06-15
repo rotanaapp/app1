@@ -77,7 +77,7 @@ pipeline {
             steps {
                 echo "Deployment Application"
                 sh """
-                    export TAG_VERSION=${VERSION} && ssh root@172.31.5.119 $env.DEPLOY_PATH/start.sh
+                    ssh root@172.31.5.119 $env.DEPLOY_PATH/start.sh ${VERSION} 
                 """
             }
         }

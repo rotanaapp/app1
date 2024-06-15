@@ -78,7 +78,7 @@ pipeline {
                 echo "Deployment Application"
                 def command = 
                     """
-                        ssh root@172.31.5.119 'cat $env.DEPLOY_PATH/.env'
+                        ssh root@172.31.5.119 'cat ${env.DEPLOY_PATH}/.env'
                     """
                     
                       // Read the .env file content
@@ -107,7 +107,7 @@ pipeline {
                       }
                       echo "Content of .env new file:\n${newEnvironmentFileContent}"
                         def commandWrite = """
-                            ssh root@172.31.5.119 'echo "${newEnvironmentFileContent}" > $env.DEPLOY_PATH/.env'
+                            ssh root@172.31.5.119 'echo "${newEnvironmentFileContent}" > ${env.DEPLOY_PATH}/.env'
                         """
                         
                         // Execute the SSH command and capture the return status

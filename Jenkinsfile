@@ -29,7 +29,7 @@ pipeline {
                             "Build Status :   🏃 START DEPLOY \n" +
                             "Release Tags :   [#${env.BUILD_NUMBER}] ${VERSION} \n"  +
                             "Release Note :   ${RELEASE_NOTE} \n"  +
-                            "======================================="
+                            "===================================================="
 
                         withCredentials([
                             string(credentialsId: 'TELEGRAM_BOT_TOKEN', variable: 'TELE_TOKEN'),
@@ -145,7 +145,7 @@ pipeline {
                     "Build Status :   ${statusString} \n" +
                     "Release Tags :   [#${env.BUILD_NUMBER}] ${VERSION} \n"  +
                     "Release Note :   ${RELEASE_NOTE} \n"  +                           "Release Note :   ${RELEASE_NOTE} \n"  +
-                    "======================================="
+                    "===================================================="
                     
 
                 withCredentials([

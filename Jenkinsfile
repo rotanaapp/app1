@@ -53,24 +53,73 @@ pipeline {
 
         }
         stage('Build Image') {
-            steps {
-                sh 'echo "Build Stage"'
-                sh """
-                    docker build -t $env.REGISTRY/$env.PROJECT_NAME:${VERSION} .
+            sh 'echo "Build Stage"'
+            script{
+                def command = 
                 """
+                    ssh root@172.31.5.119 'cat ${env.DEPLOY_PATH}/.env'
+                """
+                // Read the .env file content
+                def envFileContent = sh(script: command, returnStdout: true).trim()
+                
+                // Print the content of the .env file
+                def newEnvironmentFileContent = "# .env file\n"
+                // Process the .env file content, e.g., parse and set environment variables
+                envFileContent.tokenize('\n').each { line ->
+                    def parts = line.split('=')
+                    if (parts.size() == 2) {
+                        def key = parts[0].trim()
+                        def value = parts[1].trim()
+                        echo "key:" + key +" => " + value
+                    if(key=="APP1_VERSION"){
+                        if(value!= VERSION){
+                            steps {
+                                sh """
+                                    docker build -t $env.REGISTRY/$env.PROJECT_NAME:${VERSION} .
+                                """
+                            }
+                        }
+                    }
+                }
             }
         }
         stage('Push Image') {
             steps {
                 echo "push image to docker hub"
-                withCredentials([usernamePassword(credentialsId: 'DOCKER-CREDENTIAL-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                    sh """
-                        echo 'Login docker hub account.'
-                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-
-                        echo 'Pushing image to docker repository.'
-                        docker push $env.REGISTRY/$env.PROJECT_NAME:${VERSION}
+                
+            script{
+                    def command = 
                     """
+                        ssh root@172.31.5.119 'cat ${env.DEPLOY_PATH}/.env'
+                    """
+                    // Read the .env file content
+                    def envFileContent = sh(script: command, returnStdout: true).trim()
+                    
+                    // Print the content of the .env file
+                    def newEnvironmentFileContent = "# .env file\n"
+                    // Process the .env file content, e.g., parse and set environment variables
+                    envFileContent.tokenize('\n').each { line ->
+                        def parts = line.split('=')
+                        if (parts.size() == 2) {
+                            def key = parts[0].trim()
+                            def value = parts[1].trim()
+                            echo "key:" + key +" => " + value
+                        if(key=="APP1_VERSION"){
+                            if(value!= VERSION){
+                                steps {
+                                    withCredentials([usernamePassword(credentialsId: 'DOCKER-CREDENTIAL-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                        sh """
+                                            echo 'Login docker hub account.'
+                                            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+                                            echo 'Pushing image to docker repository.'
+                                            docker push $env.REGISTRY/$env.PROJECT_NAME:${VERSION}
+                                        """
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

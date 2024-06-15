@@ -10,7 +10,7 @@ pipeline {
 
         RELEASE_NOTE = "${params.release_note}"
         VERSION = "${params.release_version}"
-        DEPLOY_PATH  = "/opt/devops/labs/deployments"
+        DEPLOY_PATH  = "/opt/devops/assI/ms-demo/ms-deployment"
 
         // *** Telegram Credentials
         TELE_TOKEN = credentials('TELEGRAM_BOT_TOKEN')

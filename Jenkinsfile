@@ -28,7 +28,8 @@ pipeline {
                             "Builder Name :   ${env.BUILD_USER} \n" +
                             "Build Status :   🏃 START DEPLOY \n" +
                             "Release Tags :   [#${env.BUILD_NUMBER}] ${VERSION} \n"  +
-                            "Release Note :   ${RELEASE_NOTE}"
+                            "Release Note :   ${RELEASE_NOTE} \n"  +
+                            "======================================="
 
                         withCredentials([
                             string(credentialsId: 'TELEGRAM_BOT_TOKEN', variable: 'TELE_TOKEN'),
@@ -87,14 +88,14 @@ pipeline {
                       
                       // Print the content of the .env file
                       echo "Content of .env original file:\n${envFileContent}"
-                       def newEnvironmentFileContent = "# .env file\n"
+                        def newEnvironmentFileContent = "# .env file\n"
                       // Process the .env file content, e.g., parse and set environment variables
-                      envFileContent.tokenize('\n').each { line ->
-                          def parts = line.split('=')
-                          if (parts.size() == 2) {
-                              def key = parts[0].trim()
-                              def value = parts[1].trim()
-                            echo "key:" + key +" => " + value
+                        envFileContent.tokenize('\n').each { line ->
+                            def parts = line.split('=')
+                            if (parts.size() == 2) {
+                                def key = parts[0].trim()
+                                def value = parts[1].trim()
+                                echo "key:" + key +" => " + value
                             if(key=="APP1_VERSION"){
                                 if(value!= VERSION){
                                     newEnvironmentFileContent +="${key}=${VERSION}\n"
@@ -143,7 +144,9 @@ pipeline {
                     "Builder Name :   ${env.BUILD_USER} \n" +
                     "Build Status :   ${statusString} \n" +
                     "Release Tags :   [#${env.BUILD_NUMBER}] ${VERSION} \n"  +
-                    "Release Note :   ${RELEASE_NOTE}"
+                    "Release Note :   ${RELEASE_NOTE} \n"  +                           "Release Note :   ${RELEASE_NOTE} \n"  +
+                    "======================================="
+                    
 
                 withCredentials([
                     string(credentialsId: 'TELEGRAM_BOT_TOKEN', variable: 'TELE_TOKEN'),

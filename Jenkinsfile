@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'release_version', defaultValue: 'v1.0.0', description: 'Please enter release version:')
+        string(name: 'release_version', defaultValue: '1.0.0', description: 'Please enter release version:')
         string(name: 'release_note', defaultValue: '', description: 'Please enter release note:')
     }
     environment {

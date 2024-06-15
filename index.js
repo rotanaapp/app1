@@ -3,7 +3,7 @@ const app = express();
 
 
 app.get('/', function(req, res){
-	res.send("Welcomee to App1");
+	res.send("Good Bye App1, See you later.");
 });
 
 app.listen(8080,function(){

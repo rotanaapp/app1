@@ -5,7 +5,7 @@ pipeline {
         string(name: 'release_note', defaultValue: '', description: 'Please enter release note:')
     }
     environment {
-        PROJECT_NAME = 'fastapi'
+        PROJECT_NAME = 'app1'
         REGISTRY     = 'phairotana'
 
         RELEASE_NOTE = "${params.release_note}"

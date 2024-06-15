@@ -72,7 +72,7 @@ pipeline {
                                 def value = parts[1].trim()
                                 echo "key:" + key +" => " + value
                             if(key=="APP1_VERSION"){
-                                if(value!= VERSION) {
+                                if(value != VERSION) {
                                     sh """
                                         docker build -t $env.REGISTRY/$env.PROJECT_NAME:${VERSION} .
                                     """
@@ -103,12 +103,9 @@ pipeline {
                                 def key = parts[0].trim()
                                 def value = parts[1].trim()
                                 echo "key:" + key +" => " + value
-                            if(key=="APP1_VERSION"){
-                                
-                                echo "Old: " + value
-                                
-                                if(value!= VERSION) {
+                            if(key =="APP1_VERSION"){
 
+                                if(value != VERSION) {
                                     withCredentials([usernamePassword(credentialsId: 'DOCKER-CREDENTIAL-ID', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                                         sh """
                                             echo 'Login docker hub account.'
@@ -144,8 +141,8 @@ pipeline {
                                 def key = parts[0].trim()
                                 def value = parts[1].trim()
                                 echo "key:" + key +" => " + value
-                            if(key=="APP1_VERSION"){
-                                if(value!= VERSION) {
+                            if(key =="APP1_VERSION"){
+                                if(value != VERSION) {
                                     newEnvironmentFileContent +="${key}=${VERSION}\n"
                                 }
                             }
